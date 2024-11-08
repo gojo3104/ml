@@ -7,3 +7,45 @@ df.tail()
 
 df=pd.read_csv("D:\Heart - Copy.csv") 
 df.head()
+
+df.info()
+
+size=df.size
+print("size of the dataframe is:",size)
+
+df.shape
+
+print(df.describe())
+
+print(df.head)
+
+print("Data Type for each columns are\n",df.dtypes.value_counts())
+
+df.isnull().sum()
+
+df['Age'].mean()
+
+df.columns
+
+print(df['Age'])
+print(df['Sex'])
+print(df['RestBP'])
+print(df['Chol'])
+
+df[['Age','Sex','ChestPain','RestBP','Chol','RestECG']]
+
+from sklearn.model_selection import train_test_split
+train, test=train_test_split(df,random_state=0,test_size=0.25)
+train.shape
+
+test.shape
+
+import numpy as np
+actual=list(np.ones(45))+list(np.zeros(55))
+np.array(actual)
+
+predicted=list(np.ones(40))+list(np.zeros(52))+list(np.ones(8))
+np.array(predicted)
+
+
+

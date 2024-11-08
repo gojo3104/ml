@@ -1,0 +1,76 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+df=pd.read_csv("D:\Mall_Customers.csv")
+df
+
+x=df.iloc[:,3:]
+x
+
+plt.title("Unclustered Data")
+plt.xlabel("Annual Income")
+plt.ylabel("Spending Score")
+plt.scatter(x["Annual Income (k$)"],x["Spending Score (1-100)"])
+
+from sklearn.cluster import KMeans,AgglomerativeClustering
+Km=KMeans(n_clusters=3)
+x.shape
+
+Km.fit_predict(x)
+
+Km.inertia_
+
+sse=[]
+for K in range(1,16):
+Km=KMeans(n_clusters=K)
+Km.fit_predict(x)
+sse.append(Km.inertia_)
+sse
+
+plt.title("Elbow Method")
+plt.xlabel("Value of K")
+plt.ylabel("SSE")
+plt.grid()
+plt.xticks(range(1,16))
+plt.plot(range(1,16),sse,marker=".",color="red")
+
+from sklearn.metrics import silhouette_score
+
+silh=[]
+
+for K in range(2,16):
+Km=KMeans (n_clusters=K)
+labels=Km.fit_predict(x)
+score=silhouette_score(x,labels)
+silh.append(score)
+
+plt.title("Silhout Method")
+plt.xlabel("Value of K")
+plt.ylabel("Silhout Score")
+plt.grid()
+plt.xticks(range(2,16))
+plt.bar(range(2,16),silh,color="red")
+
+Km=KMeans(n_clusters=5,random_state=0)
+
+labels=Km.fit_predict(x)
+
+labels
+
+plt.figure(figsize=(16,9))
+cent=Km.cluster_centers_
+plt.subplot(1,2,1)
+plt.title("Clustered Data")
+plt.xlabel("Annual Income")
+plt.ylabel("Spending Score")
+plt.scatter(x["Annual Income (k$)"],x["Spending Score (1-100)"],c=labels)
+plt.scatter(cent[:,0],cent[:,1],s=100,color="k")
+
+Km.inertia_
+
+Km.labels_
+
+df[labels==4]
+
+Km.predict([[26,78]])
+
+

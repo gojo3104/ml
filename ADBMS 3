@@ -1,0 +1,48 @@
+test> show dbs
+
+test> use library;
+switched to db library
+
+library> db.createCollection("books")
+
+library> db.books.insert({name:"C Programming",pages:600})
+
+library> db.books.insert({names:"Java Programming",pages:200})
+
+library> db.books.insert({name:"Computer Graphics",pages:700})
+
+library> db.books.insert({name:"Object Oriented Programming",pages:150})
+
+library> db.books.insert({name:"Python Programming",pages:450})
+
+library> db.books.insert({name:"Data Structure",pages:250})
+
+library> db.books.find()
+
+library> var map=function(){
+... var category;
+... if(this.pages>=250)
+... categoru='Big Book';
+... else
+... category='Small Book';
+... emit(category,{name:this.name});
+... };
+
+
+library> var reduce=function(key,values){
+... var sum=0;
+... values.forEach(function(doc){
+... sum=sum+1;
+... });
+... return{book:sum};
+... };
+
+library> var count=db.books.mapReduce(map,reduce,{out:"book_result"});
+
+
+library> db[count.result].find()
+[
+  { _id: null, value: { book: 4 } },
+  { _id: 'Small Book', value: { book: 2 } }
+]
+library>

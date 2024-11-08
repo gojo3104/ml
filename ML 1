@@ -1,0 +1,6 @@
+import pandas as pd 
+import numpy as num
+
+
+df=pd.read_csv("D:\Heart - Copy.csv") 
+df.tail()

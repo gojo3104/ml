@@ -1,76 +1,58 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
+import os
 
-df=pd.read_csv("D:\Mall_Customers.csv")
-df
+df = pd.read_csv("D:/Admission_Predict.csv")
 
-x=df.iloc[:,3:]
+df.shape
+
+df.head()
+
+from sklearn.preprocessing import Binarizer
+bi = Binarizer(threshold=0.75)
+df['Chance of Admit Binarized'] = bi.fit_transform(df[['Chance of Admit']])
+
+
+df.head()
+
+
+x=df.drop('Chance of Admit ',axis=1)
+y=df['Chance of Admit ']
+
 x
+y
 
-plt.title("Unclustered Data")
-plt.xlabel("Annual Income")
-plt.ylabel("Spending Score")
-plt.scatter(x["Annual Income (k$)"],x["Spending Score (1-100)"])
 
-from sklearn.cluster import KMeans,AgglomerativeClustering
-Km=KMeans(n_clusters=3)
-x.shape
+y=y.astype('int')
 
-Km.fit_predict(x)
+sns.countplot(x = y)
 
-Km.inertia_
+y.value_counts()
 
-sse=[]
-for K in range(1,16):
-Km=KMeans(n_clusters=K)
-Km.fit_predict(x)
-sse.append(Km.inertia_)
-sse
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,random_state=0,test_size=0.25)
 
-plt.title("Elbow Method")
-plt.xlabel("Value of K")
-plt.ylabel("SSE")
-plt.grid()
-plt.xticks(range(1,16))
-plt.plot(range(1,16),sse,marker=".",color="red")
+x_train.shape
 
-from sklearn.metrics import silhouette_score
+x_test.shape
 
-silh=[]
 
-for K in range(2,16):
-Km=KMeans (n_clusters=K)
-labels=Km.fit_predict(x)
-score=silhouette_score(x,labels)
-silh.append(score)
+x_test
 
-plt.title("Silhout Method")
-plt.xlabel("Value of K")
-plt.ylabel("Silhout Score")
-plt.grid()
-plt.xticks(range(2,16))
-plt.bar(range(2,16),silh,color="red")
+from sklearn.tree import DecisionTreeClassifier
+classifier=DecisionTreeClassifier(random_state=0)
 
-Km=KMeans(n_clusters=5,random_state=0)
+classifier.fit(x_train,y_train)
 
-labels=Km.fit_predict(x)
+y_pred=classifier.predict(x_test)
 
-labels
 
-plt.figure(figsize=(16,9))
-cent=Km.cluster_centers_
-plt.subplot(1,2,1)
-plt.title("Clustered Data")
-plt.xlabel("Annual Income")
-plt.ylabel("Spending Score")
-plt.scatter(x["Annual Income (k$)"],x["Spending Score (1-100)"],c=labels)
-plt.scatter(cent[:,0],cent[:,1],s=100,color="k")
+from sklearn.metrics import ConfusionMatrixDisplay,accuracy_score
+from sklearn.metrics import classification_report
 
-Km.inertia_
+ConfusionMatrixDisplay.from_predictions(y_test,y_test)
 
-Km.labels_
+accuracy_score(y_test,y_pred)
 
-df[labels==4]
-
-Km.predict([[26,78]])
-
+print(classification_report(y_test,y_pred))
